@@ -13,15 +13,54 @@ namespace JWTAUTHDOTNET10.Controllers
         public static User user = new();
 
         [HttpPost("register")]
-        public ActionResult<string> Register(UserDto user)
+        public ActionResult<User> Register(UserDto userIn)
         {
-            return Ok(HashPassword(user.password));
+            var hashedPassword = HashPassword(userIn.Password);
+
+            user.HashedPassword = hashedPassword;
+            user.Email = userIn.Email;
+
+            return Ok(user);
         }
 
-        private string HashPassword(string password)
+        [HttpPost("login")]
+        public ActionResult<string> Login(UserDto userIn)
         {
-            var hashedPassword = new PasswordHasher<User>().HashPassword(user,password);
+            if (user == null)
+            {
+                return BadRequest("Missing values");
+            }
+            else if (!VerifyHashedPassword(user.HashedPassword, userIn.Password))
+            {
+                return Unauthorized("Invalid email or password");
+            }
+            else
+            {
+                return Ok("Login successful");
+            }
+        }
+
+
+
+
+        private static string HashPassword(string password)
+        {
+            var hashedPassword = new PasswordHasher<User>().HashPassword(user, password);
             return hashedPassword;
+        }
+
+        private static bool VerifyHashedPassword(string hashPassword, string password)
+        {
+            if (new PasswordHasher<User>().VerifyHashedPassword(user, hashPassword, password) == PasswordVerificationResult.Failed)
+            {
+                return false;
+
+
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class User
     {
-        public string email { get; set; }
-        public string hashedPassword { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string HashedPassword { get; set; } = string.Empty;
     }
 }
