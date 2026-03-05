@@ -1,3 +1,4 @@
+using JWTAUTHDOTNET10.Data;
 using JWTAUTHDOTNET10.Services;
 using Scalar.AspNetCore;
 
@@ -9,6 +10,11 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<LocalDbContext>();
+
+
+
 
 var app = builder.Build();
 

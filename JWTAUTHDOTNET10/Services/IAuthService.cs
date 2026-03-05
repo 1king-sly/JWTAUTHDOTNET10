@@ -10,13 +10,9 @@ namespace JWTAUTHDOTNET10.Services
 {
     public interface IAuthService
     {
-        public Task<User?> RegisterUserAsync(UserDto userIn);
+        public Task<UserOutLogin?> RegisterUserAsync(UserDto userIn);
 
-        public Task<UserOut?> LoginUserAsync(UserDto userIn); 
-
-
-        
-        
+        public Task<UserOutLogin?> LoginUserAsync(UserDto userIn); 
 
     }
 }

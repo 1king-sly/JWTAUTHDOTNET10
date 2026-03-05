@@ -1,4 +1,5 @@
-﻿using JWTAUTHDOTNET10.DTOs;
+﻿using JWTAUTHDOTNET10.Data;
+using JWTAUTHDOTNET10.DTOs;
 using JWTAUTHDOTNET10.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -8,29 +9,36 @@ using System.Text;
 
 namespace JWTAUTHDOTNET10.Services
 {
-    public class AuthService(IConfiguration configuration) : IAuthService
+    public class AuthService(IConfiguration configuration,LocalDbContext context) : IAuthService
     {
-        public static User user = new();
 
-        public async Task<User?> RegisterUserAsync(UserDto userIn)
+        
+        public async Task<UserOutLogin?> RegisterUserAsync(UserDto userIn)
+
         {
-            if (userIn is null) { return null; }
+            if (context.users.FirstOrDefault(u => u.Email == userIn.Email) is not null) { return null; }
+         User user = new();
+
 
             var hashedPassword = HashPassword(userIn.Password);
             user.HashedPassword = hashedPassword;
             user.Email = userIn.Email;
 
-            return user;
+            context.users.Add(user);
+            return new UserOutLogin(user.Id, user.Email, GenerateJwtToken(user));
         }
 
-        public async Task<UserOut?> LoginUserAsync(UserDto userIn)
+        public async Task<UserOutLogin?> LoginUserAsync(UserDto userIn)
         {
-            if (userIn is null || !VerifyHashedPassword(user.HashedPassword, userIn.Password))
+            var user = context.users.FirstOrDefault(u => u.Email == userIn.Email);
+
+
+            if (user is null || !VerifyHashedPassword(user!.HashedPassword, userIn.Password))
             {
                 return null;
             }
 
-            return new UserOut(user.Id,user.Email, GenerateJwtToken(user));
+            return new UserOutLogin(user.Id,user.Email, GenerateJwtToken(user));
 
 
         }
@@ -39,14 +47,14 @@ namespace JWTAUTHDOTNET10.Services
 
         private static string HashPassword(string password)
         {
-            var hashedPassword = new PasswordHasher<User>().HashPassword(user, password);
+            var hashedPassword = new PasswordHasher<User>().HashPassword(new(), password);
             return hashedPassword;
         }
 
         private static bool VerifyHashedPassword(string hashPassword, string password)
         {
 
-            if (new PasswordHasher<User>().VerifyHashedPassword(user, hashPassword, password) == PasswordVerificationResult.Failed)
+            if (new PasswordHasher<User>().VerifyHashedPassword(new(), hashPassword, password) == PasswordVerificationResult.Failed)
             {
                 return false;
             }
