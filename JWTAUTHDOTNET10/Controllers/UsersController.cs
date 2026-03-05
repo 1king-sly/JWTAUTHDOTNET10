@@ -1,5 +1,6 @@
 ﻿using JWTAUTHDOTNET10.DTOs;
 using JWTAUTHDOTNET10.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JWTAUTHDOTNET10.Controllers
@@ -8,6 +9,7 @@ namespace JWTAUTHDOTNET10.Controllers
     [ApiController]
     public class UsersController(IUserService service) : ControllerBase
     {
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<ActionResult<List<UserOut>>> GetUsers()
         {
@@ -17,6 +19,7 @@ namespace JWTAUTHDOTNET10.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserOut>> GetUser(string id) {
             var user = await service.GetUser(id);

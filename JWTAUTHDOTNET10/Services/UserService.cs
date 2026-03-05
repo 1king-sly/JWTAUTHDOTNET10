@@ -1,7 +1,6 @@
 ﻿using JWTAUTHDOTNET10.Data;
 using JWTAUTHDOTNET10.DTOs;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace JWTAUTHDOTNET10.Services
 {
@@ -13,7 +12,7 @@ namespace JWTAUTHDOTNET10.Services
 
             if (user == null) return null;
 
-            return new UserOut(user.Id.ToString(), user.Email, user.Created_At);
+            return new UserOut(user.Id.ToString(), user.Email, user.Role, user.Created_At);
         }
 
         public async Task<List<UserOut>> GetUsers()
@@ -21,7 +20,7 @@ namespace JWTAUTHDOTNET10.Services
             var users = new List<UserOut>();
             foreach (var user in context.users)
             {
-                users.Add(new UserOut(user.Id.ToString(), user.Email, user.Created_At));
+                users.Add(new UserOut(user.Id.ToString(), user.Email, user.Role, user.Created_At));
             }
             return users;
         }

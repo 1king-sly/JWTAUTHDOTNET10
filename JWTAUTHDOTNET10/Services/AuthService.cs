@@ -24,8 +24,13 @@ namespace JWTAUTHDOTNET10.Services
             user.HashedPassword = hashedPassword;
             user.Email = userIn.Email;
 
+            if (context.users.Count == 0)
+            {
+                user.Role = "Admin";
+            }
+
             context.users.Add(user);
-            return new UserOutLogin(user.Id, user.Email, GenerateJwtToken(user));
+            return new UserOutLogin(user.Id, user.Email,user.Role, GenerateJwtToken(user));
         }
 
         public async Task<UserOutLogin?> LoginUserAsync(UserDto userIn)
@@ -38,7 +43,7 @@ namespace JWTAUTHDOTNET10.Services
                 return null;
             }
 
-            return new UserOutLogin(user.Id,user.Email, GenerateJwtToken(user));
+            return new UserOutLogin(user.Id,user.Email, user.Role, GenerateJwtToken(user));
 
 
         }
@@ -69,6 +74,7 @@ namespace JWTAUTHDOTNET10.Services
             var claims = new List<Claim>{
                 new(ClaimTypes.Email,user.Email),
                 new(ClaimTypes.NameIdentifier,user.Id.ToString()),
+                new(ClaimTypes.Role,user.Role),
             };
 
             var key = new SymmetricSecurityKey(
