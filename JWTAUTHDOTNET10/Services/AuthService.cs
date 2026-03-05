@@ -30,7 +30,7 @@ namespace JWTAUTHDOTNET10.Services
                 return null;
             }
 
-            return new UserOut(user.Email, GenerateJwtToken(user));
+            return new UserOut(user.Id,user.Email, GenerateJwtToken(user));
 
 
         }
@@ -59,7 +59,8 @@ namespace JWTAUTHDOTNET10.Services
         private string GenerateJwtToken(User user)
         {
             var claims = new List<Claim>{
-                new(ClaimTypes.Email,user.Email)
+                new(ClaimTypes.Email,user.Email),
+                new(ClaimTypes.NameIdentifier,user.Id.ToString()),
             };
 
             var key = new SymmetricSecurityKey(

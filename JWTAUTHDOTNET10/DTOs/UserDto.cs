@@ -13,12 +13,14 @@ namespace JWTAUTHDOTNET10.DTOs
     }
 
     public class UserOut
-    {
+    {   
+        public string Id { get; set; }
         public  string Email { get; set; }
         public  string Access_Token { get; set; }
 
-        public UserOut(string email, string access_Token)
+        public UserOut(Guid id,string email, string access_Token)
         {
+            Id = id.ToString();
             Email = email;
             Access_Token = access_Token;
         }
