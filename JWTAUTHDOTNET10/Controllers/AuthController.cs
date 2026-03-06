@@ -1,5 +1,4 @@
 ﻿using JWTAUTHDOTNET10.DTOs;
-using JWTAUTHDOTNET10.Models;
 using JWTAUTHDOTNET10.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +33,18 @@ namespace JWTAUTHDOTNET10.Controllers
                 return BadRequest("Invalid email or password");
             }
             return Ok(user);
+        }
+
+        [HttpPost("refresh-token")]
+
+        public async Task<ActionResult<TokenResponseDto>> RefreshToken(RefreshTokenRequestDto request)
+        {
+            var token = await authService.RefreshTokenAsync(request);
+
+            if (token is null)
+                return Unauthorized("Invalid token");
+
+            return Ok(token);
         }
 
         [Authorize]

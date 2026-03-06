@@ -13,6 +13,7 @@ namespace JWTAUTHDOTNET10.Services
         public Task<UserOutLogin?> RegisterUserAsync(UserDto userIn);
 
         public Task<UserOutLogin?> LoginUserAsync(UserDto userIn); 
-
+        
+        public Task<TokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto refreshTokenRequest);
     }
 }

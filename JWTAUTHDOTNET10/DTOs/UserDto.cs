@@ -12,13 +12,12 @@ namespace JWTAUTHDOTNET10.DTOs
         public required string Password { get; set; }
     }
 
-    public class UserOutLogin(Guid id, string email,string role, string access_Token)
+    public class UserOutLogin(Guid id, string email,string role, string accessToken,string refreshToken):TokenResponseDto(refreshToken,accessToken)
     {
         public string Id { get; set; } = id.ToString();
         public string Email { get; set; } = email;
 
         public string Role { get; set; } = role;
-        public string Access_Token { get; set; } = access_Token;
     }
 
     public class UserOut(string id, string email,string role, DateTime createdAt)
